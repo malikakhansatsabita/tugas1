@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rak Piringan Niche</title>
+<style>
+  :root { --bg:#2a1a12; --ink:#f6e7c8; --muted:#c9ae85; --card:#3a251a; --line:#6b4a33; --accent:#e8a33d; --label:#c8442f; }
+  @media (prefers-color-scheme: light) {
+    :root { --bg:#f3e6cc; --ink:#2a1a12; --muted:#6e4f35; --card:#fff6e2; --line:#b8946a; --accent:#a8591a; --label:#b83a27; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; padding:24px; background:var(--bg); color:var(--ink);
+         font-family:Georgia,"Times New Roman",serif; line-height:1.6; display:grid; place-items:center; }
+  main { width:100%; max-width:600px; }
+  h1 { margin:0; font-size:2.2rem; line-height:1.15; }
+  .sub { margin:6px 0 24px; color:var(--muted); font-style:italic; }
+  .panggung { display:grid; grid-template-columns:150px 1fr; gap:20px; align-items:center;
+              background:var(--card); border:2px solid var(--line); border-radius:10px; padding:20px; }
+  .piringan { width:150px; height:150px; border-radius:50%; position:relative; cursor:pointer;
+              background:repeating-radial-gradient(circle at center,#111 0 3px,#1c1c1c 3px 6px);
+              border:3px solid #000; }
+  .piringan::before { content:""; position:absolute; inset:50px; border-radius:50%; background:var(--label); }
+  .piringan::after { content:""; position:absolute; width:10px; height:10px; border-radius:50%;
+                     background:var(--bg); top:calc(50% - 5px); left:calc(50% - 5px); }
+  .piringan.putar { animation:putar 2.2s linear infinite; }
+  @keyframes putar { to { transform:rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .piringan.putar { animation:none; } }
+  .info h2 { margin:0; font-size:1.25rem; }
+  .info p { margin:4px 0; }
+  .meta { color:var(--muted); font-size:.95rem; }
+  .snob { margin:20px 0; padding:14px 18px; border-left:5px solid var(--accent); background:var(--card); font-style:italic; min-height:4.5em; }
+  button { font:inherit; font-weight:bold; padding:10px 18px; margin:0 8px 8px 0; cursor:pointer;
+           background:var(--accent); color:#1d120b; border:2px solid var(--line); border-radius:6px; }
+  button.alt { background:transparent; color:var(--ink); }
+  button:focus-visible, .piringan:focus-visible { outline:3px solid var(--ink); outline-offset:3px; }
+  .meter { margin-top:8px; }
+  .bar { height:16px; border:2px solid var(--line); border-radius:8px; overflow:hidden; background:var(--card); }
+  #isi { height:100%; width:5%; background:var(--accent); transition:width .4s; }
+  @media (max-width:480px) { .panggung { grid-template-columns:1fr; justify-items:center; text-align:center; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Rak Piringan Niche</h1>
+  <p class="sub">Koleksi vinyl yang kamu belum pernah dengar, dan memang sengaja begitu.</p>
+
+  <section class="panggung">
+    <div class="piringan" id="piringan" role="button" tabindex="0" aria-label="Putar atau hentikan piringan"></div>
+    <div class="info" aria-live="polite">
+      <h2 id="judul">Belum ada piringan</h2>
+      <p id="detail" class="meta">Klik "Gali rak" untuk menemukan harta karun.</p>
+      <p id="status" class="meta">Piringan diam.</p>
+    </div>
+  </section>
+
+  <p class="snob" id="snob">"Aku cuma dengar yang pressing pertama."</p>
+
+  <button id="gali" type="button">Gali rak</button>
+  <button id="pamer" class="alt" type="button">Pamer ke teman</button>
+
+  <div class="meter">
+    Level kesnobbish: <b id="level">Pemula</b>
+    <div class="bar"><div id="isi"></div></div>
+  </div>
+</main>
+<script>
+  // Semua judul fiktif
+  const rak = [
+    { j:"Hujan di Atas Seng", a:"Trio Genteng Bocor", g:"Dub kamar kos", p:"Pressing 40 kopi" },
+    { j:"Lembah Kaset Kusut", a:"Orkes Pita Putus", g:"Shoegaze elektronik", p:"Pressing 25 kopi" },
+    { j:"Kopi Dingin, Hati Hangat", a:"Duo Sendok Teh", g:"Jazz bebas", p:"Pressing 60 kopi" },
+    { j:"Sinyal Lemah di Lantai 3", a:"Wi-Fi Kampus", g:"Ambient kampus", p:"Pressing 12 kopi" },
+    { j:"Nasi Dingin Fantasi", a:"Kelompok Rice Cooker", g:"City pop rumahan", p:"Pressing 80 kopi" },
+    { j:"Tidur Siang Simfoni", a:"Rebahan Philharmonic", g:"Neo-klasik mager", p:"Pressing 33 kopi" },
+    { j:"Bunyi Kipas Angin No. 2", a:"Putaran Tiga", g:"Drone eksperimental", p:"Pressing 9 kopi" },
+    { j:"Lagu Tema Tukang Parkir", a:"Peluit & Kawan-kawan", g:"Folk urban", p:"Pressing 50 kopi" }
+  ];
+  const ucapan = [
+    "Bagus sih, tapi belum se-niche versi bootleg Jepangnya.",
+    "Kamu dengar lewat streaming? Hmm. Menarik.",
+    "Aku beli ini sebelum band-nya sendiri tahu mereka punya band.",
+    "Suara jarumnya itu bagian dari musiknya.",
+    "Yang digital itu kurang... hangat.",
+    "Kalau belum ada goresan, berarti belum dicintai.",
+    "Sampulnya lebih mahal dari isinya, dan itu wajar.",
+    "Aku punya tiga kopi. Satu untuk didengar, dua untuk dipandang."
+  ];
+  const tingkat = ["Pemula","Penggali Rak","Kolektor Sabtu Pagi","Snob Bersertifikat","Penjaga Pressing Pertama"];
+  let skor = 5, terakhir = -1;
+  const $ = id => document.getElementById(id);
+
+  function naik(n) {
+    skor = Math.min(100, skor + n);
+    $('isi').style.width = skor + '%';
+    $('level').textContent = tingkat[Math.min(tingkat.length - 1, Math.floor(skor / 21))];
+  }
+  function toggle() {
+    const p = $('piringan'); p.classList.toggle('putar');
+    $('status').textContent = p.classList.contains('putar') ? 'Sedang berputar. Dengarkan retakannya.' : 'Piringan diam.';
+  }
+  $('piringan').addEventListener('click', toggle);
+  $('piringan').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+
+  $('gali').addEventListener('click', () => {
+    let i; do { i = Math.floor(Math.random() * rak.length); } while (i === terakhir);
+    terakhir = i; const r = rak[i];
+    $('judul').textContent = r.j;
+    $('detail').textContent = r.a + ' • ' + r.g + ' • ' + r.p;
+    $('piringan').classList.add('putar');
+    $('status').textContent = 'Sedang berputar. Dengarkan retakannya.';
+    naik(8);
+  });
+  $('pamer').addEventListener('click', () => {
+    $('snob').textContent = '"' + ucapan[Math.floor(Math.random() * ucapan.length)] + '"';
+    naik(6);
+  });
+</script>
+</body>
+</html>
