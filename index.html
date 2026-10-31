@@ -3,69 +3,172 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rak Piringan Niche</title>
+<title>Rak Piringan Niche v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#2a1a12; --ink:#f6e7c8; --muted:#c9ae85; --card:#3a251a; --line:#6b4a33; --accent:#e8a33d; --label:#c8442f; }
-  @media (prefers-color-scheme: light) {
-    :root { --bg:#f3e6cc; --ink:#2a1a12; --muted:#6e4f35; --card:#fff6e2; --line:#b8946a; --accent:#a8591a; --label:#b83a27; }
-  }
+  :root { --bg:#0b0607; --ink:#ecdfd0; --muted:#a88f86; --card:#150a0d; --line:#4a1119;
+          --accent:#b3122a; --accent-2:#e23a50; --label:#8c0f20; --darah:#9a0f23; }
   * { box-sizing:border-box; }
-  body { margin:0; min-height:100vh; padding:24px; background:var(--bg); color:var(--ink);
-         font-family:Georgia,"Times New Roman",serif; line-height:1.6; display:grid; place-items:center; }
-  main { width:100%; max-width:600px; }
-  h1 { margin:0; font-size:2.2rem; line-height:1.15; }
-  .sub { margin:6px 0 24px; color:var(--muted); font-style:italic; }
-  .panggung { display:grid; grid-template-columns:150px 1fr; gap:20px; align-items:center;
-              background:var(--card); border:2px solid var(--line); border-radius:10px; padding:20px; }
+  body { margin:0; min-height:100vh; padding:96px 20px 40px; overflow-x:hidden;
+         background:radial-gradient(ellipse at 50% 0%, #2a0b11 0%, var(--bg) 60%);
+         color:var(--ink); font-family:"Palatino Linotype","Book Antiqua",Georgia,serif;
+         line-height:1.6; display:grid; place-items:center; }
+
+  /* Tengkorak raksasa transparan di belakang */
+  .hantu { position:fixed; right:-70px; bottom:-70px; width:440px; color:#fff; opacity:.045;
+           pointer-events:none; z-index:0; }
+
+  /* Darah menetes dari atas halaman */
+  .tetes { position:fixed; top:0; left:0; right:0; height:14px; background:var(--darah); z-index:5;
+           box-shadow:0 2px 12px rgba(154,15,35,.6); pointer-events:none; }
+  .tetes span { position:absolute; top:0; width:14px; height:var(--h); background:var(--darah);
+                border-radius:0 0 8px 8px; animation:menetes 2.4s ease-out both; }
+  .tetes span::after { content:""; position:absolute; bottom:-6px; left:-1px; width:16px; height:16px;
+                       border-radius:50%; background:var(--darah); }
+  @keyframes menetes { from { height:0; } }
+  @media (prefers-reduced-motion: reduce) { .tetes span { animation:none; } .piringan.putar { animation:none !important; } }
+
+  main { width:100%; max-width:620px; position:relative; z-index:1; }
+
+  h1 { margin:0; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+       font-family:"Pirata One","Old English Text MT",Georgia,serif; font-weight:400;
+       font-size:3rem; line-height:1.05; letter-spacing:.02em; text-shadow:0 0 18px rgba(179,18,42,.6); }
+  h1 .ico { width:.85em; height:.85em; color:var(--ink); flex:none; filter:drop-shadow(0 0 8px var(--accent)); }
+  .sub { margin:10px 0 28px; color:var(--muted); font-style:italic; }
+
+  .panggung { position:relative; display:grid; grid-template-columns:150px 1fr; gap:22px; align-items:center;
+              background:var(--card); border:1px solid var(--line); border-radius:4px; padding:24px;
+              box-shadow:inset 0 0 40px rgba(179,18,42,.14), 0 0 0 1px #000; }
+  .cipratan { position:absolute; width:84px; height:84px; color:var(--darah); pointer-events:none; }
+  .cipratan.a { top:-30px; right:-6px; transform:rotate(18deg); }
+  .cipratan.b { bottom:-30px; left:-6px; width:64px; height:64px; transform:rotate(-30deg); }
+
   .piringan { width:150px; height:150px; border-radius:50%; position:relative; cursor:pointer;
-              background:repeating-radial-gradient(circle at center,#111 0 3px,#1c1c1c 3px 6px);
-              border:3px solid #000; }
-  .piringan::before { content:""; position:absolute; inset:50px; border-radius:50%; background:var(--label); }
-  .piringan::after { content:""; position:absolute; width:10px; height:10px; border-radius:50%;
-                     background:var(--bg); top:calc(50% - 5px); left:calc(50% - 5px); }
+              background:
+                conic-gradient(from 30deg, transparent 0 20%, rgba(255,255,255,.07) 25%, transparent 30% 70%, rgba(255,255,255,.05) 75%, transparent 80%),
+                repeating-radial-gradient(circle at center,#0a0a0a 0 3px,#171314 3px 6px);
+              border:3px solid #000; box-shadow:0 0 24px rgba(179,18,42,.5); }
+  .piringan::before { content:""; position:absolute; inset:46px; border-radius:50%; background:var(--label);
+                      box-shadow:inset 0 0 0 3px #000; }
+  .piringan .tengah { position:absolute; width:34px; height:34px; top:calc(50% - 17px); left:calc(50% - 17px);
+                      color:#f1e4d3; pointer-events:none; }
+  .piringan .retak { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
   .piringan.putar { animation:putar 2.2s linear infinite; }
   @keyframes putar { to { transform:rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) { .piringan.putar { animation:none; } }
-  .info h2 { margin:0; font-size:1.25rem; }
+
+  .info h2 { margin:0; font-family:"Pirata One",Georgia,serif; font-weight:400; font-size:1.55rem; }
   .info p { margin:4px 0; }
   .meta { color:var(--muted); font-size:.95rem; }
-  .snob { margin:20px 0; padding:14px 18px; border-left:5px solid var(--accent); background:var(--card); font-style:italic; min-height:4.5em; }
+
+  .snob { margin:26px 0 22px; padding:14px 18px; border-left:4px solid var(--accent); background:var(--card);
+          font-style:italic; min-height:4.5em; }
+
   button { font:inherit; font-weight:bold; padding:10px 18px; margin:0 8px 8px 0; cursor:pointer;
-           background:var(--accent); color:#1d120b; border:2px solid var(--line); border-radius:6px; }
-  button.alt { background:transparent; color:var(--ink); }
+           display:inline-flex; align-items:center; gap:8px;
+           background:var(--accent); color:#fff3ea; border:1px solid #000; border-radius:3px;
+           box-shadow:0 0 0 1px var(--accent-2) inset; }
+  button svg { width:18px; height:18px; }
+  button:hover { background:var(--accent-2); }
+  button.alt { background:transparent; color:var(--ink); box-shadow:0 0 0 1px var(--line) inset; }
+  button.alt:hover { background:var(--card); }
   button:focus-visible, .piringan:focus-visible { outline:3px solid var(--ink); outline-offset:3px; }
-  .meter { margin-top:8px; }
-  .bar { height:16px; border:2px solid var(--line); border-radius:8px; overflow:hidden; background:var(--card); }
-  #isi { height:100%; width:5%; background:var(--accent); transition:width .4s; }
-  @media (max-width:480px) { .panggung { grid-template-columns:1fr; justify-items:center; text-align:center; } }
+
+  .meter { margin-top:12px; }
+  .nyawa { display:flex; gap:8px; margin-top:6px; }
+  .tg { width:30px; height:30px; color:#33252a; transition:color .3s, filter .3s; }
+  .tg.nyala { color:var(--accent-2); filter:drop-shadow(0 0 7px var(--accent)); }
+  .bar { height:14px; margin-top:10px; border:1px solid var(--line); border-radius:3px; overflow:hidden; background:#000; }
+  #isi { height:100%; width:5%; background:linear-gradient(90deg, var(--label), var(--accent-2)); transition:width .4s; }
+
+  @media (max-width:480px) {
+    .panggung { grid-template-columns:1fr; justify-items:center; text-align:center; }
+    h1 { font-size:2.3rem; }
+  }
 </style>
 </head>
 <body>
+
+<!-- Kumpulan gambar SVG yang dipakai ulang -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="tengkorak" viewBox="0 0 64 64">
+    <path d="M32 4C17 4 8 14 8 27c0 8 4 13 9 16v9c0 2 1 4 4 4h22c3 0 4-2 4-4v-9c5-3 9-8 9-16C56 14 47 4 32 4z" fill="currentColor"/>
+    <ellipse cx="22" cy="28" rx="7" ry="8" style="fill:var(--bg)"/>
+    <ellipse cx="42" cy="28" rx="7" ry="8" style="fill:var(--bg)"/>
+    <path d="M32 36l-4 8h8z" style="fill:var(--bg)"/>
+    <path d="M24 48v6M32 48v6M40 48v6" style="stroke:var(--bg)" stroke-width="2.5" fill="none"/>
+  </symbol>
+  <symbol id="cipratan" viewBox="0 0 100 100">
+    <g fill="currentColor">
+      <path d="M50 8c8 14 12 20 26 18-8 10-6 16 4 26-14-2-18 4-18 18-8-10-14-10-24 0 0-12-6-20-20-18 12-8 12-16 6-28 12 6 18 4 26-16z"/>
+      <circle cx="12" cy="20" r="4"/><circle cx="88" cy="70" r="5"/>
+      <circle cx="80" cy="92" r="3"/><circle cx="20" cy="84" r="6"/>
+    </g>
+  </symbol>
+</svg>
+
+<svg class="hantu" viewBox="0 0 64 64" aria-hidden="true"><use href="#tengkorak"/></svg>
+
+<div class="tetes" aria-hidden="true">
+  <span style="left:6%;  --h:46px"></span>
+  <span style="left:17%; --h:74px"></span>
+  <span style="left:29%; --h:38px"></span>
+  <span style="left:43%; --h:62px"></span>
+  <span style="left:57%; --h:84px"></span>
+  <span style="left:70%; --h:44px"></span>
+  <span style="left:83%; --h:68px"></span>
+  <span style="left:93%; --h:36px"></span>
+</div>
+
 <main>
-  <h1>Rak Piringan Niche</h1>
-  <p class="sub">Koleksi vinyl yang kamu belum pernah dengar, dan memang sengaja begitu.</p>
+  <h1>
+    <svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><use href="#tengkorak"/></svg>
+    Rak Piringan Niche v2
+    <svg class="ico" viewBox="0 0 64 64" aria-hidden="true"><use href="#tengkorak"/></svg>
+  </h1>
+  <p class="sub">Koleksi vinyl dari liang kubur. Kamu belum pernah dengar, dan arwahnya juga belum.</p>
 
   <section class="panggung">
-    <div class="piringan" id="piringan" role="button" tabindex="0" aria-label="Putar atau hentikan piringan"></div>
+    <svg class="cipratan a" viewBox="0 0 100 100" aria-hidden="true"><use href="#cipratan"/></svg>
+    <svg class="cipratan b" viewBox="0 0 100 100" aria-hidden="true"><use href="#cipratan"/></svg>
+
+    <div class="piringan" id="piringan" role="button" tabindex="0" aria-label="Putar atau hentikan piringan">
+      <svg class="retak" viewBox="0 0 150 150" aria-hidden="true">
+        <path d="M75 75 L112 40 L104 30 L138 8 M75 75 L128 98 L124 112" fill="none" stroke="#b3122a" stroke-width="2.2" stroke-linejoin="round"/>
+      </svg>
+      <svg class="tengah" viewBox="0 0 64 64" aria-hidden="true"><use href="#tengkorak"/></svg>
+    </div>
+
     <div class="info" aria-live="polite">
-      <h2 id="judul">Belum ada piringan</h2>
-      <p id="detail" class="meta">Klik "Gali rak" untuk menemukan harta karun.</p>
-      <p id="status" class="meta">Piringan diam.</p>
+      <h2 id="judul">Peti masih kosong</h2>
+      <p id="detail" class="meta">Klik "Gali rak" untuk membangkitkan piringan dari kubur.</p>
+      <p id="status" class="meta">Piringan diam. Sunyi. Mencurigakan.</p>
     </div>
   </section>
 
-  <p class="snob" id="snob">"Aku cuma dengar yang pressing pertama."</p>
+  <p class="snob" id="snob">"Aku cuma dengar yang pressing pertama. Dari abad ke-17."</p>
 
-  <button id="gali" type="button">Gali rak</button>
+  <button id="gali" type="button">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#tengkorak"/></svg>Gali rak
+  </button>
   <button id="pamer" class="alt" type="button">Pamer ke teman</button>
 
   <div class="meter">
-    Level kesnobbish: <b id="level">Pemula</b>
+    Level kesnobbish: <b id="level">Mayat Segar</b>
+    <div class="nyawa" id="nyawa" aria-hidden="true">
+      <svg class="tg" viewBox="0 0 64 64"><use href="#tengkorak"/></svg>
+      <svg class="tg" viewBox="0 0 64 64"><use href="#tengkorak"/></svg>
+      <svg class="tg" viewBox="0 0 64 64"><use href="#tengkorak"/></svg>
+      <svg class="tg" viewBox="0 0 64 64"><use href="#tengkorak"/></svg>
+      <svg class="tg" viewBox="0 0 64 64"><use href="#tengkorak"/></svg>
+    </div>
     <div class="bar"><div id="isi"></div></div>
   </div>
 </main>
+
 <script>
-  // Semua judul fiktif
+  // Semua judul dan nama band fiktif
   const rak = [
     { j:"Hujan di Atas Seng", a:"Trio Genteng Bocor", g:"Dub kamar kos", p:"Pressing 40 kopi" },
     { j:"Lembah Kaset Kusut", a:"Orkes Pita Putus", g:"Shoegaze elektronik", p:"Pressing 25 kopi" },
@@ -74,30 +177,40 @@
     { j:"Nasi Dingin Fantasi", a:"Kelompok Rice Cooker", g:"City pop rumahan", p:"Pressing 80 kopi" },
     { j:"Tidur Siang Simfoni", a:"Rebahan Philharmonic", g:"Neo-klasik mager", p:"Pressing 33 kopi" },
     { j:"Bunyi Kipas Angin No. 2", a:"Putaran Tiga", g:"Drone eksperimental", p:"Pressing 9 kopi" },
-    { j:"Lagu Tema Tukang Parkir", a:"Peluit & Kawan-kawan", g:"Folk urban", p:"Pressing 50 kopi" }
+    { j:"Lagu Tema Tukang Parkir", a:"Peluit & Kawan-kawan", g:"Folk urban", p:"Pressing 50 kopi" },
+    { j:"Dengung Kulkas Jam 3 Pagi", a:"Es Batu Ensemble", g:"Noise lo-fi", p:"Pressing 7 kopi" },
+    { j:"Merah Saus Sambal", a:"Koor Gigi Taring", g:"Goth-dangdut", p:"Pressing 13 kopi" },
+    { j:"Kuburan Wi-Fi Gratis", a:"Hantu Kos-kosan", g:"Darkwave rumahan", p:"Pressing 6 kopi" },
+    { j:"Lilin Habis, Tagihan Datang", a:"Vampir Hemat Listrik", g:"Post-punk sabtu malam", p:"Pressing 31 kopi" },
+    { j:"Tulang Rusuk Bass Boost", a:"Rangka Berisik", g:"Death-folk", p:"Pressing 4 kopi" }
   ];
   const ucapan = [
     "Bagus sih, tapi belum se-niche versi bootleg Jepangnya.",
-    "Kamu dengar lewat streaming? Hmm. Menarik.",
+    "Kamu dengar lewat streaming? Hmm. Menarik. Jiwamu kosong.",
     "Aku beli ini sebelum band-nya sendiri tahu mereka punya band.",
-    "Suara jarumnya itu bagian dari musiknya.",
-    "Yang digital itu kurang... hangat.",
+    "Suara jarumnya itu bagian dari musiknya. Dan dari arwahnya.",
+    "Yang digital itu kurang... berdarah.",
     "Kalau belum ada goresan, berarti belum dicintai.",
     "Sampulnya lebih mahal dari isinya, dan itu wajar.",
-    "Aku punya tiga kopi. Satu untuk didengar, dua untuk dipandang."
+    "Aku punya tiga kopi. Satu untuk didengar, dua untuk dikubur bersamaku."
   ];
-  const tingkat = ["Pemula","Penggali Rak","Kolektor Sabtu Pagi","Snob Bersertifikat","Penjaga Pressing Pertama"];
+  const tingkat = ["Mayat Segar","Penggali Kubur","Kolektor Tengah Malam","Snob Bersertifikat","Penjaga Pressing Pertama"];
   let skor = 5, terakhir = -1;
   const $ = id => document.getElementById(id);
 
+  function tampilkanLevel() {
+    const idx = Math.min(tingkat.length - 1, Math.floor(skor / 21));
+    $('level').textContent = tingkat[idx];
+    document.querySelectorAll('#nyawa .tg').forEach((el, i) => el.classList.toggle('nyala', i <= idx));
+  }
   function naik(n) {
     skor = Math.min(100, skor + n);
     $('isi').style.width = skor + '%';
-    $('level').textContent = tingkat[Math.min(tingkat.length - 1, Math.floor(skor / 21))];
+    tampilkanLevel();
   }
   function toggle() {
     const p = $('piringan'); p.classList.toggle('putar');
-    $('status').textContent = p.classList.contains('putar') ? 'Sedang berputar. Dengarkan retakannya.' : 'Piringan diam.';
+    $('status').textContent = p.classList.contains('putar') ? 'Sedang berputar. Dengarkan retakannya.' : 'Piringan diam. Sunyi. Mencurigakan.';
   }
   $('piringan').addEventListener('click', toggle);
   $('piringan').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
@@ -115,6 +228,8 @@
     $('snob').textContent = '"' + ucapan[Math.floor(Math.random() * ucapan.length)] + '"';
     naik(6);
   });
+
+  tampilkanLevel();
 </script>
 </body>
 </html>
